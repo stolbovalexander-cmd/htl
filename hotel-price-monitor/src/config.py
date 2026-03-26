@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     # Default cashback rates
     default_tinkoff_cashback_percent: float = 5.0
-    default_ostrovok_points_rate: float = 1.0
+    default_ostrovok_cashback_percent: float = 10.0
     default_otello_promo_percent: float = 15.0
     default_trip_cashback_percent: float = 0.0
 

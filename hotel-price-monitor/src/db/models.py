@@ -132,7 +132,7 @@ class UserSettings(Base):
 
     # Cashback rates
     tinkoff_cashback_percent: Mapped[float] = mapped_column(Float, default=5.0)
-    ostrovok_points_rate: Mapped[float] = mapped_column(Float, default=1.0)
+    ostrovok_cashback_percent: Mapped[float] = mapped_column(Float, default=10.0)
     otello_promo_percent: Mapped[float] = mapped_column(Float, default=15.0)
     trip_cashback_percent: Mapped[float] = mapped_column(Float, default=0.0)
 

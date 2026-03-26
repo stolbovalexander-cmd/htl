@@ -24,7 +24,7 @@ def get_provider_cashback_percent(
     """Return the user's configured cashback percent for a given provider."""
     mapping: dict[ProviderName, float] = {
         ProviderName.TINKOFF: settings.tinkoff_cashback_percent,
-        ProviderName.OSTROVOK: settings.ostrovok_points_rate,
+        ProviderName.OSTROVOK: settings.ostrovok_cashback_percent,
         ProviderName.OTELLO: settings.otello_promo_percent,
         ProviderName.TRIP: settings.trip_cashback_percent,
         ProviderName.OTHER: 0.0,
