@@ -112,7 +112,7 @@ class UserSettingsRepo:
         user_id: int,
         *,
         tinkoff_cashback_percent: float | None = None,
-        ostrovok_points_rate: float | None = None,
+        ostrovok_cashback_percent: float | None = None,
         otello_promo_percent: float | None = None,
         trip_cashback_percent: float | None = None,
         min_diff_rub: float | None = None,
@@ -122,8 +122,8 @@ class UserSettingsRepo:
         settings = await self.get_or_create(user_id)
         if tinkoff_cashback_percent is not None:
             settings.tinkoff_cashback_percent = tinkoff_cashback_percent
-        if ostrovok_points_rate is not None:
-            settings.ostrovok_points_rate = ostrovok_points_rate
+        if ostrovok_cashback_percent is not None:
+            settings.ostrovok_cashback_percent = ostrovok_cashback_percent
         if otello_promo_percent is not None:
             settings.otello_promo_percent = otello_promo_percent
         if trip_cashback_percent is not None:

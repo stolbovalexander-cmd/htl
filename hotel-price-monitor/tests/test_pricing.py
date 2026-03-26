@@ -41,7 +41,7 @@ def _make_settings(
     return UserSettings(
         user_id=123,
         tinkoff_cashback_percent=tinkoff,
-        ostrovok_points_rate=ostrovok,
+        ostrovok_cashback_percent=ostrovok,
         otello_promo_percent=otello,
         trip_cashback_percent=trip,
         min_diff_rub=min_rub,

@@ -12,7 +12,7 @@ from src.config import get_settings
 from src.core.models import ProviderName
 from src.db.engine import build_engine, build_session_factory, init_db
 from src.providers.mock_provider import MockProvider
-from src.scheduler import start_scheduler
+from src.scheduler import check_prices, start_scheduler
 
 logging.basicConfig(
     level=logging.INFO,
@@ -63,6 +63,17 @@ async def main() -> None:
         send_message=send_tg_message,
         interval_hours=settings.default_check_interval_hours,
     )
+
+    # Attach manual check function so /check handler can call it
+    async def _manual_check(uid: int) -> None:
+        await check_prices(
+            session_factory=session_factory,
+            providers=providers,  # type: ignore[arg-type]
+            send_message=send_tg_message,
+            user_id=uid,
+        )
+
+    bot._check_prices_fn = _manual_check  # type: ignore[attr-defined]
 
     # Start polling
     logger.info("Bot is starting…")

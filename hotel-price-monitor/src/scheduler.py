@@ -25,12 +25,20 @@ async def check_prices(
     session_factory: async_sessionmaker[AsyncSession],
     providers: list[PriceProvider],
     send_message: SendMessageFn,
+    user_id: int | None = None,
 ) -> None:
-    """Run a full price-check cycle for all active watches."""
+    """Run a full price-check cycle for active watches.
+
+    If *user_id* is given, only that user's watches are checked (manual /check).
+    Otherwise all active watches are checked (scheduled job).
+    """
     async with session_factory() as session:
         watch_repo = HotelWatchRepo(session)
         settings_repo = UserSettingsRepo(session)
-        watches: Sequence[HotelWatch] = await watch_repo.list_all_active()
+        if user_id is not None:
+            watches: Sequence[HotelWatch] = await watch_repo.list_by_user(user_id)
+        else:
+            watches = await watch_repo.list_all_active()
 
         for watch in watches:
             baseline = watch.baseline

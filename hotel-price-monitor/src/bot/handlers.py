@@ -85,6 +85,7 @@ async def cmd_start(message: Message) -> None:
         "/watch <id> — подробности\n"
         "/remove <id> — удалить\n"
         "/settings — настройки кешбэка и уведомлений\n"
+        "/check — запустить проверку цен вручную\n"
     )
 
 
@@ -366,7 +367,7 @@ async def cmd_remove(message: Message) -> None:
 
 SETTINGS_FIELDS: dict[str, str] = {
     "1": "tinkoff_cashback_percent",
-    "2": "ostrovok_points_rate",
+    "2": "ostrovok_cashback_percent",
     "3": "otello_promo_percent",
     "4": "trip_cashback_percent",
     "5": "min_diff_rub",
@@ -387,7 +388,7 @@ async def cmd_settings(message: Message, state: FSMContext) -> None:
     text = (
         "⚙️ *Ваши настройки:*\n\n"
         f"1. Tinkoff кешбэк: {s.tinkoff_cashback_percent}%\n"
-        f"2. Ostrovok баллы (₽ за 1 балл): {s.ostrovok_points_rate}\n"
+        f"2. Ostrovok кешбэк: {s.ostrovok_cashback_percent}%\n"
         f"3. Otello промо: {s.otello_promo_percent}%\n"
         f"4. Trip.com кешбэк: {s.trip_cashback_percent}%\n"
         f"5. Порог уведомления (₽): {s.min_diff_rub}\n"
@@ -433,6 +434,37 @@ async def on_settings_value(message: Message, state: FSMContext) -> None:
 
     await state.clear()
     await message.answer(f"✅ {field} обновлён: {val}")
+
+
+# ── /check ─────────────────────────────────────────────────────────────────
+
+
+@router.message(Command("check"))
+async def cmd_check(message: Message) -> None:
+    """Manually trigger a price check for all user's active watches."""
+    user_id = message.from_user.id if message.from_user else 0
+    factory = _get_session_factory(message)
+
+    async with factory() as session:
+        repo = HotelWatchRepo(session)
+        watches = await repo.list_by_user(user_id)
+
+    if not watches:
+        await message.answer("📭 Нет активных мониторингов. Используйте /add.")
+        return
+
+    # Access the check function via bot's extra data
+    check_fn = getattr(message.bot, "_check_prices_fn", None)
+    if check_fn is None:
+        await message.answer("⚠️ Функция проверки цен не настроена.")
+        return
+
+    await message.answer(f"🔍 Запускаю проверку {len(watches)} отелей... Подождите.")
+    await check_fn(user_id)
+    await message.answer(
+        "✅ Проверка завершена. Если найдены выгодные предложения —"
+        " уведомления отправлены выше."
+    )
 
 
 # ── /cancel ────────────────────────────────────────────────────────────────
