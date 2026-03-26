@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "hotel-price-monitor"
+version = "0.1.0"
+description = "Telegram bot for monitoring hotel prices across multiple platforms"
+authors = ["Dev <dev@example.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^3.4"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0"}
+aiosqlite = "^0.20"
+apscheduler = "^3.10"
+pydantic = "^2.6"
+pydantic-settings = "^2.2"
+python-dotenv = "^1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+pytest-asyncio = "^0.23"
+mypy = "^1.8"
+ruff = "^0.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = []
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
