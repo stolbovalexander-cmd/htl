@@ -174,14 +174,14 @@ async def on_breakfast(message: Message, state: FSMContext) -> None:
         return
     await state.update_data(breakfast=text)
     await state.set_state(AddWatchFSM.payment)
-    await message.answer("💳 Тип оплаты? (ONLINE / ON_SITE / ANY):")
+    await message.answer("💳 Тип оплаты? (ONLINE / Hotel / ANY):")
 
 
 @router.message(AddWatchFSM.payment)
 async def on_payment(message: Message, state: FSMContext) -> None:
     text = (message.text or "").strip().upper()
-    if text not in ("ONLINE", "ON_SITE", "ANY"):
-        await message.answer("⚠️ Введите ONLINE, ON_SITE или ANY.")
+    if text not in ("ONLINE", "Hotel", "ANY"):
+        await message.answer("⚠️ Введите ONLINE, Hotel или ANY.")
         return
     await state.update_data(payment=text)
     await state.set_state(AddWatchFSM.booking_provider)
